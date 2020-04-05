@@ -24,7 +24,7 @@
       <input type="submit" value="登 录" @click.prevent="submitLogin"/>
      </form>
     </div>
-    <a href="#">注册>></a>
+    <router-link to="/register" tag="a">注册>></router-link>
     <div class="clear"></div>
    </div>
    <div class="clear"></div>
@@ -61,10 +61,13 @@ export default {
     if (photoPassword) {
       this.loginObject.password = Base64.decode(photoPassword)
     }
+    // 同时存在邮箱和密码时，默认给记住我打勾
+    if (photoEmail && photoPassword) {
+      this.isRemember = true
+    }
   },
   methods: {
     submitLogin: function () {
-      debugger
       // 点击记住我时，把邮箱和密码存入到localStorage(浏览器内存)
       if (this.isRemember) {
         localStorage.setItem('photo_email', Base64.encode(this.loginObject.email))
@@ -79,8 +82,13 @@ export default {
       params.append('userPassword', this.loginObject.password)
       params.append('code', this.loginObject.code)
 
-      this.$http.post('/user/login', params, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).then(function (response) {
-        console.log('登录成功后的' + response)
+      this.$http.post('/user/login', params, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).then((response) => {
+        if (response.data.content.status === '00') {
+          this.$router.push({ path: '/index' })
+        } else {
+          this.$Message.error(response.data.content.msg)
+        }
+        // console.log('登录成功后的' + response)
       })
     },
     changeCode: function () {
@@ -96,7 +104,6 @@ export default {
 }
 </script>
 
-<style  scoped >
+<style src="../../public/css/style.css" scoped >
 
-  @import '../../public/css/style.css'
 </style>

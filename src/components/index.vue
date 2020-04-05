@@ -31,7 +31,7 @@
             <router-link tag="a" to="/login">登录</router-link>
           </li>
           <li class="layui-nav-item">
-            <a href="">注册</a>
+            <router-link tag="a" to="/login">注册</router-link>
           </li>
         </ul>
         <!-- <p class="welcome-text">
