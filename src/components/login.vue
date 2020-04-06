@@ -85,8 +85,6 @@ export default {
       this.$http.post('/user/login', params, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).then((response) => {
         if (response.data.content.status === '00') {
           this.$router.push({ path: '/index' })
-        } else {
-          this.$Message.error(response.data.content.msg)
         }
         // console.log('登录成功后的' + response)
       })

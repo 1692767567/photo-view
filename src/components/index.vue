@@ -19,18 +19,22 @@
         </div>
 
         <ul class="layui-nav layui-col-md3 layui-col-md-offset9" :style="{'background':'#fff','color': '#3f2863'}">
-          <li class="layui-nav-item" >
-            <a href=""><img src="//t.cn/RCzsdCq" class="layui-nav-img"></a>
+          <li class="layui-nav-item" v-if="reayLogin">
+            <a href=""><img :src="userPath" style="width:50px;height:auto" class="layui-nav-img"></a>
             <dl class="layui-nav-child">
-              <dd><a href="javascript:;">修改信息</a></dd>
+              <dd>
+                <router-link to="/updateSelfInfo" tag="a">个人信息</router-link>
+              </dd>
               <dd><a href="javascript:;">安全管理</a></dd>
-              <dd><a href="javascript:;">退了</a></dd>
+              <dd>
+                <a @click.prevent="loginOut">退出</a>
+                </dd>
             </dl>
           </li>
-          <li class="layui-nav-item">
+          <li class="layui-nav-item" v-if="!reayLogin">
             <router-link tag="a" to="/login">登录</router-link>
           </li>
-          <li class="layui-nav-item">
+          <li class="layui-nav-item" v-if="!reayLogin">
             <router-link tag="a" to="/login">注册</router-link>
           </li>
         </ul>
@@ -175,7 +179,26 @@
 
 export default {
   name: 'app',
+  data: function () {
+    return {
+      reayLogin: false
+    }
+  },
   methods: {
+    loginOut: function () {
+      // 退出登录功能
+      this.$http.get('/user/loginOut').then((response) => {
+        if (response.data.content.status === '00') {
+          if (response.data.content.data.result) {
+            // 清除cookie
+            this.$cookies.remove('cookie_token')
+            this.reayLogin = false
+          } else {
+            this.$Message.error(response.data.content.msg)
+          }
+        }
+      })
+    }
   },
   mounted: function () {
     // eslint-disable-next-line no-undef
@@ -189,6 +212,17 @@ export default {
         // eslint-disable-next-line no-undef
         layer.msg(elem.text())
       })
+    })
+    this.$http.get('/user/getUserInfo').then((response) => {
+      debugger
+      if (response.data.content.data.isLogin) {
+        this.reayLogin = true
+        this.userPath = response.data.content.data.userPath
+        console.log(this.reayLogin)
+      } else {
+        this.reayLogin = false
+        this.userPath = ''
+      }
     })
   }
 }

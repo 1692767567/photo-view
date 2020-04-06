@@ -1,6 +1,6 @@
 import axios from 'axios'
 import router from '../router'
-
+import { Message } from 'element-ui'
 axios.defaults.baseURL = 'http://localhost:8080/photo'
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 axios.defaults.timeout = 6000
@@ -17,13 +17,17 @@ axios.interceptors.request.use(function (config) {
 
 // 响应被接收之前拦截器，每次响应回来都会执行
 axios.interceptors.response.use(function (response) {
-  console.log('响应执行的代码')
+  debugger
+  // 统一对为错误的响应进行提示
+  if (response.data.content.status !== '00') {
+    Message.error(response.data.content.msg)
+  }
   return response
 },
 function (error) {
   if (error.response) {
-    if (error.response.status === 401) {
-      console.log('还未登录')
+    if (error.response.status === 403) {
+      Message.error('还未登录')
       router.push('/login')
     }
   }
