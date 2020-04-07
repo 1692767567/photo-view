@@ -14,17 +14,18 @@
               >
                 <el-menu-item index="1">
                   <i class="el-icon-user-solid"></i>
-                  <span slot="title">我的账户</span>
+                  <span slot="title" @click="contentContr=true">我的账户</span>
                 </el-menu-item>
                 <el-menu-item index="2">
                   <i class="el-icon-s-tools"></i>
-                  <span slot="title">修改密码</span>
+                  <span slot="title"  @click="contentContr=false">修改密码</span>
                 </el-menu-item>
               </el-menu>
             </el-col>
           </el-row>
         </el-col>
-        <el-col :span="17" :offset="1" backgroud="color:#fff">
+        <!-- 个人信息修改 -->
+        <el-col :span="17" v-if="contentContr" :offset="1" backgroud="color:#fff">
           <el-row>
             <el-col :span="6">
               <div style="width:100%">
@@ -114,6 +115,36 @@
             </el-col>
           </el-row>
         </el-col>
+
+        <!-- 密码修改 -->
+        <el-col :span="17" v-if="!contentContr" :offset="1" backgroud="color:#fff">
+          <el-row>
+            <el-col :span="12">
+              <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+                <el-form-item label="密码" prop="userPassword">
+                  <el-input type="password" v-model="ruleForm.userPassword"></el-input>
+                </el-form-item>
+                <el-form-item label="确认密码" prop="checkPassword">
+                  <el-input type="password" v-model="ruleForm.checkPassword"></el-input>
+                </el-form-item>
+                <el-form-item label="验证码" prop="name">
+                  <el-row>
+                    <el-col :span="18">
+                      <el-input v-model="ruleForm.name"></el-input>
+                    </el-col>
+                    <el-col :span="6">
+                      <button @click.prevent="sendCode()" class="send-code el-button el-button--primary" ref="codeTime">{{codeTime}}</button>
+                    </el-col>
+                  </el-row>
+                </el-form-item>
+                <el-form-item>
+                  <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+                  <el-button @click="resetForm('ruleForm')">重置</el-button>
+                </el-form-item>
+              </el-form>
+            </el-col>
+          </el-row>
+        </el-col>
       </el-row>
     </div>
     <photofooter></photofooter>
@@ -126,25 +157,51 @@ import photofooter from './footer.vue'
 export default {
   name: 'app',
   data: function () {
+    var passValitor = (rule, value, callback) => {
+      if (this.ruleForm.userPassword !== this.ruleForm.checkPassword) {
+        callback(new Error('确认密码和密码不一致'))
+      }
+    }
     return {
-      fromData: {
+      fromData: { // 显示个人信息的数据
         userName: '',
         userPhone: '',
         signature: '',
         photoPath: ''
       },
-      editorData: {
+      editorData: { // 修改个人信息输入框对应的数据
         editName: '',
         editPhone: '',
         editSignature: '',
         editPhotoPath: ''
       },
-      editorContr: {
+      editorContr: { // 控制个人信息修改的修改框出现
         userEditor: false,
         phoneEditor: false,
         signatureEditor: false
       },
-      url: ''
+      url: '',
+      contentContr: true, // 控制显示修改密码或者个人信息
+      ruleForm: { // 修改密码表单对应的数据
+        userPassword: '',
+        checkPassword: '',
+        code: ''
+      },
+      rules: { // 修改密码表单验证规则
+        userPassword: [
+          { required: true, message: '密码不能为空' },
+          { min: 6, max: 16, message: '密码为6~16位' }
+        ],
+        checkPassword: [
+          { required: true, message: '确认密码不能为空' },
+          { valitor: passValitor }
+        ],
+        code: [
+          { required: true, message: '验证码不能为空' }
+        ]
+      },
+      codeTime: '发送验证码',
+      id: '' // 定时器id
     }
   },
   mounted: function () {
@@ -256,6 +313,68 @@ export default {
           }
         }
       })
+    },
+    // 发送验证码
+    sendCode () {
+      var params = new URLSearchParams()
+      params.append('email', this.ruleForm.email)
+      var thisRef = this
+      this.$http.post('/email/sendUpdateUserInfoCode', params, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).then((response) => {
+        if (response.data.content.status === '01') {
+          return
+        }
+
+        thisRef.codeTime = 60
+        // 设置发送按钮不可点击
+        thisRef.$refs.codeTime.disabled = true
+        // 设置一个定时器，每1000毫秒就减去1
+        thisRef.id = setInterval(() => {
+          console.log(thisRef.codeTime)
+          if (thisRef.codeTime > 0) {
+            thisRef.codeTime--
+          } else {
+            thisRef.$refs.codeTime.disabled = false
+            thisRef.codeTime = '重新发送'
+            clearInterval(thisRef.id)
+          }
+        }, 1000)
+      })
+    },
+    submitForm (formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          // 封装注册的参数
+          var params = new URLSearchParams()
+          params.append('userPassword', this.ruleForm.password)
+          params.append('code', this.ruleForm.code)
+          // 清除定时器
+          clearInterval(this.id)
+          // 禁用提交按钮，防止多次提交
+          // this.$refs.submitRegister.disabled = true
+          this.codeTime = '重新发送'
+          this.$http.post('/user/updateUser', params, { 'Content-Type': 'application/x-www-form-urlencoded' }).then((response) => {
+            debugger
+            // 解除提交按钮的禁用
+            // this.$refs.submitRegister.disabled = true
+            // 解除发送验证码按钮
+            this.$refs.codeTime.disabled = false
+            if (response.data.content.status === '00') {
+              this.ruleForm.userPassword = ''
+              this.ruleForm.checkPassword = ''
+              this.ruleForm.code = ''
+              this.codeTime = '发送验证码'
+              this.$Message.success(response.data.content.msg)
+            } else {
+              this.$Message.error(response.data.content.msg)
+            }
+          })
+        } else {
+          this.$Message.warning('表单信息未完善')
+        }
+      })
+    },
+    resetForm (formName) {
+      this.$refs[formName].resetFields()
     }
   },
   components: {
@@ -304,7 +423,6 @@ button, input, optgroup, option, select, textarea {
 }
 
 input {
-    -webkit-writing-mode: horizontal-tb !important;
     text-rendering: auto;
     color: -internal-light-dark-color(black, white);
     letter-spacing: normal;
@@ -359,5 +477,9 @@ input {
     border-radius: 4px;
     -webkit-transition: border-color .2s cubic-bezier(.645,.045,.355,1);
     transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+}
+
+.send-code{
+    width: 108px;
 }
 </style>

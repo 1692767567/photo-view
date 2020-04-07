@@ -20,7 +20,7 @@
 
         <ul class="layui-nav layui-col-md3 layui-col-md-offset9" :style="{'background':'#fff','color': '#3f2863'}">
           <li class="layui-nav-item" v-if="reayLogin">
-            <a href=""><img :src="userPath" style="width:50px;height:auto" class="layui-nav-img"></a>
+            <img :src="userPath" style="width:50px;height:50px;" class="layui-nav-img">
             <dl class="layui-nav-child">
               <dd>
                 <router-link to="/updateSelfInfo" tag="a">个人信息</router-link>
