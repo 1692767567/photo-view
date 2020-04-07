@@ -3,7 +3,7 @@
     <h1>电子相册</h1>
     <div class='container w3layouts agileits'>
       <div class='login w3layouts agileits'>
-        <h2>登 录</h2>
+        <h2>注 册</h2>
         <el-form
           :model='ruleForm'
           status-icon

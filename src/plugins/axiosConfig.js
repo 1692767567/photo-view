@@ -9,15 +9,11 @@ axios.defaults.withCredentials = true // 允许携带cookie
 
 // 请求之前的拦截器，每次请求之前都会执行这个函数
 axios.interceptors.request.use(function (config) {
-  // 给请求头添加上令牌
-  console.log('请求之前的拦截器')
-  config.headers.Authorization = sessionStorage.getItem('photo_taken')
   return config
 })
 
 // 响应被接收之前拦截器，每次响应回来都会执行
 axios.interceptors.response.use(function (response) {
-  debugger
   // 统一对为错误的响应进行提示
   if (response.data.content.status !== '00') {
     Message.error(response.data.content.msg)

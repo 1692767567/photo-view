@@ -74,8 +74,6 @@ export default {
         localStorage.setItem('photo_password', Base64.encode(this.loginObject.password))
       }
 
-      // 获取请求验证码返回时的sessionId
-      this.loginObject.sessionId = sessionStorage.getItem('photo_session')
       // 发起登录的请求
       var params = new URLSearchParams()
       params.append('userEmail', this.loginObject.email)
