@@ -213,6 +213,8 @@ export default {
       // 执行实例
       upload.render({
         elem: '#headPortrait', // 绑定元素
+        accept: 'images',
+        size: 2048,
         url: 'http://localhost:8080/photo/upload/headPortraitUpload?token=' + _this.$cookies.get('cookie_token'), // 上传接口
         done: function (res) {
           debugger
@@ -282,9 +284,10 @@ export default {
       }
     },
     saveSignature: function () {
+      debugger
       var b = true
       this.editorContr.signatureEditor = false
-      if (this.editorData.editSingatur && this.editorData.editSingatur.length > 50) {
+      if (this.editorData.editSignature && this.editorData.editSignature.length > 50) {
         this.editorData.editSignature = this.fromData.signature
         this.$Message.warning('个性签名不能多于50位！')
         b = false

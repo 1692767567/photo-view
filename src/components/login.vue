@@ -7,7 +7,7 @@
     <form action="#" method="post">
      <input type="text" name="Userame" v-model="loginObject.email" placeholder="邮箱" required="" />
      <input type="password" name="Password" v-model="loginObject.password"  placeholder="密码" required="" />
-     <input type="text"  @click.enter="submitLogin" style="width:50%"  v-model="loginObject.code"  placeholder="验证码" />
+     <input type="text"  style="width:50%"  v-model="loginObject.code"  placeholder="验证码" />
      <img style="width:100px;height:39px" @click="changeCode" :src="codeSrc">
     </form>
     <ul class="tick w3layouts agileits">

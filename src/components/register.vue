@@ -33,7 +33,7 @@
         <div class='send-button w3layouts agileits'>
           <form>
             <!-- @click.prevent 点击时触发submitForm 函数 ， .prevent 阻止表单的提交事件 -->
-            <input type='submit' ref="submitRegister" value='登 录' @click.prevent="submitForm('ruleForm')" />
+            <input type='submit' ref="submitRegister" value='注 册' @click.prevent="submitForm('ruleForm')" />
           </form>
         </div>
         <router-link to="/login" tag="a">已有账号?登录>></router-link>
@@ -109,11 +109,10 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.$Message.success('验证成功', 'success')
           // 封装注册的参数
           var params = new URLSearchParams()
           params.append('userEmail', this.ruleForm.email)
-          params.append('userPassword', this.ruleForm.password)
+          params.append('userPassword', this.ruleForm.pass)
           params.append('code', this.ruleForm.code)
           // 清除定时器
           clearInterval(this.id)
@@ -123,14 +122,12 @@ export default {
           this.$http.post('/user/register', params, { 'Content-Type': 'application/x-www-form-urlencoded' }).then((response) => {
             debugger
             // 解除提交按钮的禁用
-            this.$refs.submitRegister.disabled = true
+            this.$refs.submitRegister.disabled = false
             // 解除发送验证码按钮
             this.$refs.codeTime.disabled = false
             if (response.data.content.status === '00') {
               // 登录成功跳转到首页
               this.$router.push({ path: '/index' })
-            } else {
-              this.$Message.error(response.data.content.msg)
             }
           })
         } else {
