@@ -100,6 +100,5 @@ export default {
 }
 </script>
 
-<style scoped >
- @import '../../public/css/style.css';
+<style scoped src='../../public/css/style.css'>
 </style>

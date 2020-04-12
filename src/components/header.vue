@@ -12,7 +12,8 @@
         </h1>
         <div class="nav layui-col-md6">
           <a href="index.html" class="active">文章</a>
-          <a href="whisper.html">微语</a>
+          <!-- <a href="whisper.html">微语</a> -->
+          <router-link to="/dirList" tag="a">相册</router-link>
           <a href="leacots.html">留言</a>
           <a href="album.html">相册</a>
           <a href="about.html">关于</a>
@@ -105,8 +106,7 @@ export default {
 
 </script>
 
-<style scoped>
-  @import '../../public/css/main.css';
+<style scoped src="../../public/css/main.css">
 
   .layui-nav .layui-nav-item a{
     color: #3f2863;
