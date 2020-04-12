@@ -154,6 +154,6 @@ export default {
 }
 </script>
 
-<style scope>
-  @import '../../public/css/waterfall.css';
+<style scoped src='../../public/css/waterfall.css'>
+  /* @import ''; */
 </style>

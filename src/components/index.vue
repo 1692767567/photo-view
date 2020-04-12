@@ -140,8 +140,8 @@ export default {
 
 </script>
 
-<style scope src='../../public/css/main.css'>
-
+<style scope >
+    @import '../../public/css/main.css';
   .layui-nav .layui-nav-item a{
     color: #3f2863;
   }

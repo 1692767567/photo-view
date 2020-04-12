@@ -37,7 +37,6 @@
           </form>
         </div>
         <router-link to="/login" tag="a">已有账号?登录>></router-link>
-        <a href='#'>注册>></a>
         <div class='clear'></div>
       </div>
       <div class='clear'></div>

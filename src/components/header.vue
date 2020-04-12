@@ -106,8 +106,10 @@ export default {
 
 </script>
 
-<style scoped src="../../public/css/main.css">
-
+<style scoped>
+ @import '../../public/css/main.css';
+</style>
+<style scoped >
   .layui-nav .layui-nav-item a{
     color: #3f2863;
   }
