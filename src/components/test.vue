@@ -1,20 +1,12 @@
-
 <template>
-  <div id='app' style='width:100px;height:100px'>
-    <span v-for="(e,index) in arr" :key="index">{{index}}</span>
-  </div>
+<div style="width:100%">
+
+</div>
 </template>
+
+<style scoped >
+</style>
+
 <script>
-export default {
-  data: function () {
-    return {
-      arr: [
-        1,
-        2,
-        3,
-        4
-      ]
-    }
-  }
-}
+
 </script>

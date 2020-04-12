@@ -105,7 +105,7 @@ export default {
 
 </script>
 
-<style>
+<style scoped>
   @import '../../public/css/main.css';
 
   .layui-nav .layui-nav-item a{

@@ -3,11 +3,9 @@ import App from './App.vue'
 import router from './router'
 import './plugins/element.js'
 import axios from './plugins/axiosConfig.js'
+import Contextmenu from 'vue-contextmenujs'
 
-// import qs from 'qs'
-
-// import login from '../views/login.vue'
-
+Vue.use(Contextmenu)
 Vue.config.productionTip = false
 Vue.prototype.$http = axios
 

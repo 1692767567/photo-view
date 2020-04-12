@@ -388,7 +388,7 @@ export default {
 </script>
 
 <style scoped>
-@import "../../public/css/main.css";
+  @import "../../public/css/main.css";
 .content{
   margin-top:40px;
 }

@@ -7,9 +7,8 @@ import updateSelfInfo from '../components/updateSelfInfo.vue'
 import dirList from '../components/dirList.vue'
 import VueCookies from 'vue-cookies'
 import test from '../components/test.vue'
-import Contextmenu from 'vue-contextmenujs'
+import fileList from '../components/fileList.vue'
 
-Vue.use(Contextmenu)
 Vue.use(VueRouter)
 Vue.use(VueCookies)
 Vue.filter('dateFilter', function (data) {
@@ -29,7 +28,8 @@ const routes = [
   { path: '/register', component: register },
   { path: '/updateSelfInfo', component: updateSelfInfo },
   { path: '/dirList', component: dirList },
-  { path: '/test', component: test }
+  { path: '/test', component: test },
+  { path: '/fileList/:dirId', component: fileList }
 ]
 
 const router = new VueRouter({

@@ -24,7 +24,7 @@
             <el-col :span="3" :offset="1" v-for="(arr,index) in allDirList" :key="'all'+index">
                 <!-- <el-row >
                   <el-col :span="24"> -->
-                    <div style="margin-top:40px" v-for="(e) in arr" :key="e.dirId" @contextmenu.prevent='selectDir(e.dirId)'>
+                    <div style="margin-top:40px" v-for="(e) in arr" :key="e.dirId" @contextmenu.prevent='selectDir(e.dirId)' @click="toFileList(e.dirId)">
                       <el-card :body-style="{ padding: '0px' }" @contextmenu.prevent.native='onContextmenu'>
                           <img :src="e.dirImg" class="image" style="width:100%;height:auto"/>
                           <div style="padding: 2px;" class="content-div" v-if="e.createTime">
@@ -278,12 +278,14 @@ export default {
           {
             label: '下载相册',
             onClick: () => {
-              this.$http.post('/dir/downloadDir?dirId=' + this.selectDirId).then((response) => {
+              this.$http.get('/dir/downloadDir?dirId=' + this.selectDirId, { responseType: 'blob' }).then((response) => {
                 debugger
-                var content = response.data.content
-                if (content.status === '00') {
-                  this.$Message.success(content.msg)
-                }
+                const url = window.URL.createObjectURL(new Blob([response.data]))
+                const link = document.createElement('a')
+                link.href = url
+                link.setAttribute('download', '相册.zip') // this.selectFileName下载后的文件名
+                document.body.appendChild(link)
+                link.click()
               })
             },
             icon: 'el-icon-download'
@@ -353,6 +355,9 @@ export default {
           // this.$refs[formName].resetFields()
         }
       })
+    },
+    toFileList: function (dirId) {
+      this.$router.push('/fileList/' + dirId)
     }
   }
 }

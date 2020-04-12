@@ -174,8 +174,8 @@ export default {
   }
 }
 </script>
-<style src='../../public/css/register.css' scoped>
-
+<style  scoped>
+  @import '../../public/css/register.css';
 </style>
 <style >
 .all-content .el-input__inner{

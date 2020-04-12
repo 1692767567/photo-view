@@ -140,7 +140,7 @@ export default {
 
 </script>
 
-<style>
+<style scope>
   @import '../../public/css/main.css';
 
   .layui-nav .layui-nav-item a{
