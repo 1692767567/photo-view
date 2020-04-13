@@ -63,6 +63,8 @@ export default {
             // 清除cookie
             this.$cookies.remove('cookie_token')
             this.reayLogin = false
+
+            this.$Message.success(response.data.content.msg)
           } else {
             this.$Message.error(response.data.content.msg)
           }
