@@ -1,32 +1,275 @@
+
+<template>
+  <div id="all-div">
+      <div id="friend-app" style="">
+        <div class="cntro-div">
+          <div class="user-img-div"><img src="../../public/images/friend1.jpg" style="width:40px;height:40px;margin-left:5px"></div>
+          <ui>
+            <li><a @click.prevent="isShowFriend=false" :class="{check:!isShowFriend,'icon-a':true}"><i class="el-icon-chat-round"></i></a></li>
+            <li><a @click.prevent="isShowFriend=true" :class="{check:isShowFriend,'icon-a':true}"><i class="el-icon-user"></i></a></li>
+          </ui>
+        </div>
+        <!-- 聊天功能所有的页面 -->
+        <div class="sidebar">
+          <div v-show="!isShowFriend">
+            <div class="card">
+              <header>
+              </header>
+              <footer>
+                <input class="search" type="text" placeholder="search user..." @keyup="onKeyup" />
+              </footer>
+            </div>
+            <div class="list">
+              <ul>
+                <li
+                  v-for="(item,index) in currentSessions"
+                  :key="'user_list'+index"
+                  :class="{ active: item.id === currentSessionId }"
+                  @click="selectSession(item.id)"
+                >
+                  <img class="avatar" width="30" height="30" :alt="item.user.name" :src="item.user.img" />
+                  <p class="name">{{item.user.name}}</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!--好友功能所有的页面-->
+          <div v-show="isShowFriend">
+            <div class="card">
+              <header>
+                <input class="search" type="text" placeholder="search user..." @keyup="onKeyup" />
+              </header>
+              <div class="card-footer">
+                <div class="card-tietle">新的朋友</div>
+                <div :class="{'cart-list-div':true,'current-cart-list-div':'new_friend'===currentCartListValue}" @click="selectCardList('new_friend')">
+                  <el-row>
+                    <el-col :span="5">
+                      <img style="height: 35px;" src="../../public/images/addFriend.png">
+                    </el-col>
+                    <el-col :span="16">
+                      <div class="card-content" @click="dialogVisible=true">新的朋友</div>
+                    </el-col>
+                  </el-row>
+                </div>
+              </div>
+              <div class="card-footer">
+                <div class="card-tietle">好友申请</div>
+                <div :class="{'cart-list-div':true,'current-cart-list-div':'new_friend'===currentCartListValue}" @click="selectCardList('new_friend')">
+                  <el-row>
+                    <el-col :span="5">
+                      <img style="height: 30px;" src="../../public/images/friendApply.png">
+                    </el-col>
+                    <el-col :span="16">
+                      <div class="card-content"><router-link to="/friend/friendApplyList" tag="a">好友申请</router-link></div>
+                    </el-col>
+                  </el-row>
+                </div>
+              </div>
+            </div>
+            <div class="list">
+              <ul>
+                <li
+                  v-for="(item,index) in currentSessions"
+                  :key="'user_list'+index"
+                  :class="{ active: item.id === currentSessionId }"
+                  @click="selectSession(item.id)"
+                >
+                  <img class="avatar" width="30" height="30" :alt="item.user.name" :src="item.user.img" />
+                  <p class="name">{{item.user.name}}</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!-- 聊天页面 -->
+          <div class="main" v-show="!isShowFriend">
+          <div class="message" v-scroll-bottom="session.messages">
+            <ul v-if="session">
+              <li v-for="(item,index) in session.messages" :key="'message'+index">
+                <p class="time">
+                  <span>{{ item.date | time }}</span>
+                </p>
+                <div class="main" :class="{ self: item.self }">
+                  <img
+                    class="avatar"
+                    width="30"
+                    height="30"
+                    :src="item.self ? user.img : session.user.img"
+                  />
+                  <div class="messages-text">{{ item.content }}</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="text">
+          <textarea placeholder="按 Ctrl + Enter 发送" v-model="content" @keyup="sendMessageKeyUp"></textarea>
+          </div>
+        </div>
+        <div style="position: relative;overflow: hidden;background-color: #eee;height:100%">
+          <router-view :style="{'height':'100%'}"></router-view>
+        </div>
+      </div>
+
+      <el-dialog
+        title="添加好友"
+        :visible.sync="dialogVisible"
+        width="30%"
+        :before-close="handleClose">
+        <div style="margin-top: 15px;">
+          <el-input placeholder="请完整的邮箱" v-model="friendApplySearchValue" class="input-with-select">
+            <el-button slot="append" icon="el-icon-search" @click="friendApplySearch"></el-button>
+          </el-input>
+        </div>
+
+        <template>
+          <el-table
+            :data="userList"
+            style="width: 100%">
+            <el-table-column
+              prop="userName"
+              label="用户名"
+              width="180">
+            </el-table-column>
+            <el-table-column
+              prop="userEmail"
+              label="邮箱"
+              width="180">
+            </el-table-column>
+            <el-table-column
+              fixed="right"
+              label="操作"
+              width="100">
+              <template slot-scope="scope">
+                <el-button @click="addApply(scope.row)" type="text" size="small">添加</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+
+          <el-form v-show="isShowRemark">
+            <el-form-item label="活动形式">
+              <el-input type="textarea" v-model="currentApplyRemark"></el-input>
+            </el-form-item>
+
+             <el-form-item>
+              <el-button type="primary" @click="submitForm('ruleForm')" size="small" plain>提交</el-button>
+            </el-form-item>
+          </el-form>
+        </template>
+      </el-dialog>
+  </div>
+</template>
 <script>
 export default {
-  created () {},
+  name: 'app',
+  mounted: function () {
+    this.currentSessions = [].concat(this.allSession)
+  },
   methods: {
-    onKeyup (e) {
-      this.search(e.target.value)
+    onKeyup (e) { // 过滤聊天列表
+      this.filterKey = e.target.value
+      this.currentSessions.splice(0)
+      this.currentSessions = this.allSession.filter((value) => {
+        if (value.user.name.indexOf(this.filterKey) >= 0) {
+          return value
+        }
+      })
     },
-    sendMessageKeyUp: function (e) {
+    filterFriend (e) { // 过滤好友列表
+      this.friendKey = e.target.value
+      this.currentFriendList.splice(0)
+      this.currentFriendList = this.allFriendList.filter((value) => {
+        if (value.remark.indexOf(this.friendKey) >= 0) {
+          return value
+        }
+      })
+    },
+    sendMessageKeyUp: function (e) { // 发送信息
       if (e.ctrlKey && e.keyCode === 13 && this.content.length) {
-        this.sendMessage(this.content)
+        this.session.messages.push({
+          content: this.content,
+          date: new Date(),
+          self: true
+        })
         this.content = ''
       }
+    },
+    selectSession: function (itemId) { // 切换用户
+      this.currentSessionId = itemId
+      this.session = this.currentSessions.find(function (value, index, arr) {
+        if (value.id === itemId) {
+          return true
+        }
+      })
+    },
+    handleClose (done) { // 关闭搜索添加好友的弹框
+      this.$confirm('确认关闭？')
+        .then(_ => {
+          done()
+        })
+        .catch(_ => {})
+    },
+    friendApplySearch: function () { // 根据邮箱搜索好友
+      if (!this.friendApplySearchValue) {
+        return
+      }
+      var param = new URLSearchParams()
+      param.append('email', this.friendApplySearchValue)
+      this.$http.post('/user/getUserByEmail', param).then((response) => {
+        var content = response.data.content
+        if (content.status === '00') {
+          this.userList = content.data.userInfo
+          if (!this.userList || this.userList.length === 0) {
+            this.$Message.success(content.msg)
+          }
+        }
+      })
+    },
+    showRemark: function (row) { // 点击添加按钮,展示备注页面
+      this.currentApplyFriendId = row.userId
+      this.isShowRemark = true
+    },
+    addApply: function () { // 提交好友申请
+      if (this.currentApplyRemark && this.currentApplyRemark.length > 20) {
+        this.$Message.error('申请备注不能超过20个字')
+        return
+      }
+
+      var param = new URLSearchParams()
+      param.append('toId', this.currentApplyFriendId)
+      param.append('remark', this.currentApplyRemark)
+      // 提交添加好友申请
+      this.$http.post('/friendApply/insertApply', param).then((response) => {
+        var content = response.data.content
+        if (content.status === '00') {
+          if (content.data.result) {
+            this.$Message.success(content.data.msg)
+          } else {
+            this.$Message.error(content.data.msg)
+          }
+        }
+      })
+      this.isShowRemark = true
+    },
+    selectCardList: function () {
     }
   },
   data () {
     return {
+      dialogVisible: false,
+      isShowFriend: false,
       content: '',
       // 当前用户
       user: {
         name: 'coffce',
-        img: './dist/images/1.jpg'
+        img: '../../public/images/friend1.jpg'
       },
       // 会话列表
-      sessions: [
+      allSession: [
         {
           id: 1,
           user: {
             name: '示例介绍',
-            img: './dist/images/2.png'
+            img: '../../public/images/friend2.png'
           },
           messages: [
             {
@@ -44,16 +287,17 @@ export default {
           id: 2,
           user: {
             name: 'webpack',
-            img: './dist/images/3.jpg'
+            img: '../../public/images/friend3.jpg'
           },
           messages: []
         }
       ],
+      currentSessions: [], // 当前符合筛选条件的聊天记录
       session: {
         id: 1,
         user: {
           name: '示例介绍',
-          img: './dist/images/2.png'
+          img: '../../public/images/friend2.png'
         },
         messages: [
           {
@@ -70,7 +314,25 @@ export default {
       // 当前选中的会话
       currentSessionId: 1,
       // 过滤出只包含这个key的会话
-      filterKey: ''
+      filterKey: '',
+      // 当前好友列表
+      allFriendList: [],
+      // 符合条件的好友列表
+      currentFriendList: [],
+      // 好友列表页面筛选的关键字
+      friendKey: '',
+      // 搜索添加好友的搜索结果列表
+      userList: [],
+      // 添加好友的搜索输入的内容
+      friendApplySearchValue: '',
+      // 好友页面当前选中的功能或者好友
+      currentCartListValue: '',
+      // 添加好友页面点击添加按钮的好友id
+      currentApplyFriendId: '',
+      // 添加好友页面的备注
+      currentApplyRemark: '',
+      // 是否展示备注
+      isShowRemark: false
     }
   },
   filters: {
@@ -85,249 +347,14 @@ export default {
   },
   directives: {
     // 发送消息后滚动到底部
-    'scroll-bottom' () {
-      this.vm.$nextTick(() => {
-        this.el.scrollTop = this.el.scrollHeight - this.el.clientHeight
+    'scroll-bottom': function (el, binding, vnode) {
+      vnode.context.$nextTick(() => {
+        vnode.context.scrollTop = vnode.context.scrollHeight - vnode.context.clientHeight
       })
     }
   }
 }
 </script>
+<style src="../../public/css/friend.css" scoped>
 
-<template>
-  <div id="app">
-    <div class="sidebar">
-      <div class="card">
-        <header>
-          <img class="avatar" width="40" height="40" :alt="user.name" :src="user.img" />
-          <p class="name">{{user.name}}</p>
-        </header>
-        <footer>
-          <input class="search" type="text" placeholder="search user..." @keyup="onKeyup" />
-        </footer>
-      </div>
-      <div class="list">
-        <ul>
-          <li
-            v-for="(item,index) in sessions"
-            :key="'user_list'+index"
-            :class="{ active: item.id === currentId }"
-            @click="selectSession(item.id)"
-          >
-            <img class="avatar" width="30" height="30" :alt="item.user.name" :src="item.user.img" />
-            <p class="name">{{item.user.name}}</p>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="main">
-      <div class="message" v-scroll-bottom="session.messages">
-        <ul v-if="session">
-          <li v-for="(item,index) in session.messages" :key="'message'+index">
-            <p class="time">
-              <span>{{ item.date | time }}</span>
-            </p>
-            <div class="main" :class="{ self: item.self }">
-              <img
-                class="avatar"
-                width="30"
-                height="30"
-                :src="item.self ? user.img : session.user.img"
-              />
-              <div class="text">{{ item.content }}</div>
-            </div>
-          </li>
-        </ul>
-      </div>
-      <textarea placeholder="按 Ctrl + Enter 发送" v-model="content" @keyup="sendMessageKeyUp"></textarea>
-    </div>
-  </div>
-</template>
-
-<style lang="less" scoped>
-#app {
-  margin: 20px auto;
-  width: 800px;
-  height: 600px;
-
-  overflow: hidden;
-  border-radius: 3px;
-
-  .sidebar,
-  .main {
-    height: 100%;
-  }
-  .sidebar {
-    float: left;
-    width: 200px;
-    color: #f4f4f4;
-    background-color: #2e3238;
-  }
-  .main {
-    position: relative;
-    overflow: hidden;
-    background-color: #eee;
-  }
-  .text {
-    position: absolute;
-    width: 100%;
-    bottom: 0;
-    left: 0;
-  }
-  .message {
-    height: ~"calc(100% - 160px)";
-  }
-}
-</style>
-
-<style scoped lang="less">
-.card {
-  padding: 12px;
-  border-bottom: solid 1px #24272c;
-
-  footer {
-    margin-top: 10px;
-  }
-
-  .avatar,
-  .name {
-    vertical-align: middle;
-  }
-  .avatar {
-    border-radius: 2px;
-  }
-  .name {
-    display: inline-block;
-    margin: 0 0 0 15px;
-    font-size: 16px;
-  }
-  .search {
-    padding: 0 10px;
-    width: 100%;
-    font-size: 12px;
-    color: #fff;
-    height: 30px;
-    line-height: 30px;
-    border: solid 1px #3a3a3a;
-    border-radius: 4px;
-    outline: none;
-    background-color: #26292e;
-  }
-}
-</style>
-
-<style scoped lang="less">
-.list {
-  li {
-    padding: 12px 15px;
-    border-bottom: 1px solid #292c33;
-    cursor: pointer;
-    transition: background-color 0.1s;
-
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.03);
-    }
-    &.active {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-  }
-  .avatar,
-  .name {
-    vertical-align: middle;
-  }
-  .avatar {
-    border-radius: 2px;
-  }
-  .name {
-    display: inline-block;
-    margin: 0 0 0 15px;
-  }
-}
-</style>
-
-<style lang="less" scoped>
-.message {
-  padding: 10px 15px;
-  overflow-y: scroll;
-
-  li {
-    margin-bottom: 15px;
-  }
-  .time {
-    margin: 7px 0;
-    text-align: center;
-
-    > span {
-      display: inline-block;
-      padding: 0 18px;
-      font-size: 12px;
-      color: #fff;
-      border-radius: 2px;
-      background-color: #dcdcdc;
-    }
-  }
-  .avatar {
-    float: left;
-    margin: 0 10px 0 0;
-    border-radius: 3px;
-  }
-  .text {
-    display: inline-block;
-    position: relative;
-    padding: 0 10px;
-    max-width: ~"calc(100% - 40px)";
-    min-height: 30px;
-    line-height: 2.5;
-    font-size: 12px;
-    text-align: left;
-    word-break: break-all;
-    background-color: #fafafa;
-    border-radius: 4px;
-
-    &:before {
-      content: " ";
-      position: absolute;
-      top: 9px;
-      right: 100%;
-      border: 6px solid transparent;
-      border-right-color: #fafafa;
-    }
-  }
-
-  .self {
-    text-align: right;
-
-    .avatar {
-      float: right;
-      margin: 0 0 0 10px;
-    }
-    .text {
-      background-color: #b2e281;
-
-      &:before {
-        right: inherit;
-        left: 100%;
-        border-right-color: transparent;
-        border-left-color: #b2e281;
-      }
-    }
-  }
-}
-</style>
-
-<style lang="less" scoped>
-.text {
-  height: 160px;
-  border-top: solid 1px #ddd;
-
-  textarea {
-    padding: 10px;
-    height: 100%;
-    width: 100%;
-    border: none;
-    outline: none;
-    font-family: "Micrsofot Yahei";
-    resize: none;
-  }
-}
 </style>

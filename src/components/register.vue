@@ -1,5 +1,5 @@
 <template>
-  <div style='width:100%' class='all-content'>
+  <div style='width:100%;height:950px' class='all-content'>
     <h1>电子相册</h1>
     <div class='container w3layouts agileits'>
       <div class='login w3layouts agileits'>

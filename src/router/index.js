@@ -8,6 +8,8 @@ import dirList from '../components/dirList.vue'
 import VueCookies from 'vue-cookies'
 // import test from '../components/test.vue'
 import fileList from '../components/fileList.vue'
+import friend from '../components/friend.vue'
+import friendApplyList from '../components/friendApplyList.vue'
 
 Vue.use(VueRouter)
 Vue.use(VueCookies)
@@ -28,8 +30,16 @@ const routes = [
   { path: '/register', component: register },
   { path: '/updateSelfInfo', component: updateSelfInfo },
   { path: '/dirList', component: dirList },
-  // { path: '/test', component: test },
-  { path: '/fileList/:dirId', component: fileList }
+  // // { path: '/test', component: test },
+  { path: '/fileList/:dirId', component: fileList },
+  {
+    path: '/friend/',
+    component: friend,
+    children:
+    [
+      { path: '/friend/friendApplyList', component: friendApplyList }
+    ]
+  }
 ]
 
 const router = new VueRouter({

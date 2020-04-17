@@ -1,0 +1,229 @@
+* {
+    box-sizing: border-box;
+  }
+  *:before,
+  *:after {
+    box-sizing: inherit;
+  }
+  
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+  
+  #all-div{
+    width:100%;
+    background:#f5f5f5 url('../../public/images/bg.jpg') no-repeat center;
+    background-size: cover;
+    height: 100%;
+    position:absolute; left:0; top:0;
+  }
+  #friend-app {
+    color: #4d4d4d;
+    font: 14px/1.4em 'Helvetica Neue', Helvetica, 'Microsoft Yahei', Arial, sans-serif;
+    background-size: cover;
+    font-smoothing: antialiased;
+    background: #f5f5f5 url('../../public/images/bg.jpg') no-repeat center;
+    height: 100%;
+  }
+  
+  .cntro-div{
+    width:50px;
+    float: left;
+    background-color: #2e3238;;
+    height: 100%;
+    padding-top:40px;
+  }
+  .user-img-div{
+    margin-bottom: 30px;
+  }
+  .icon-a{
+      color: rgb(64,65,67);
+      line-height: 65px;
+      font-size: 25px;
+      text-align: center;
+      display: block;
+      width: 100%;
+  }
+  
+  .check{
+    color: green !important;
+  }
+  
+  .icon-a:hover{
+      color:#fff;
+  }
+  ul {
+    list-style: none;
+  }
+  
+  .text {
+    height: 160px;
+    border-top: solid 1px #ddd;
+  }
+  .text textarea {
+    padding: 10px;
+    height: 100%;
+    width: 100%;
+    border: none;
+    outline: none;
+    font-family: "Micrsofot Yahei";
+    resize: none;
+  }
+  
+  .message {
+    padding: 10px 15px;
+    overflow-y: scroll;
+  }
+  .message li {
+    margin-bottom: 15px;
+  }
+  .message .time {
+    margin: 7px 0;
+    text-align: center;
+  }
+  .message .time > span {
+    display: inline-block;
+    padding: 0 18px;
+    font-size: 12px;
+    color: #fff;
+    border-radius: 2px;
+    background-color: #dcdcdc;
+  }
+  .message .avatar {
+    float: left;
+    margin: 0 10px 0 0;
+    border-radius: 3px;
+  }
+  .message .messages-text {
+    display: inline-block;
+    position: relative;
+    padding: 0 10px;
+    max-width: calc(100% - 40px);
+    min-height: 30px;
+    line-height: 2.5;
+    font-size: 12px;
+    text-align: left;
+    word-break: break-all;
+    background-color: #fafafa;
+    border-radius: 4px;
+  }
+  .message .messages-text:before {
+    content: " ";
+    position: absolute;
+    top: 9px;
+    right: 100%;
+    border: 6px solid transparent;
+    border-right-color: #fafafa;
+  }
+  .message .self {
+    text-align: right;
+  }
+  .message .self .avatar {
+    float: right;
+    margin: 0 0 0 10px;
+  }
+  .message .self .messages-text {
+    background-color: #b2e281;
+  }
+  .message .self .messages-text:before {
+    right: inherit;
+    left: 100%;
+    border-right-color: transparent;
+    border-left-color: #b2e281;
+  }
+  #friend-app {
+    height: 90%;
+    margin: 20px auto;
+    width: 1200px;
+    overflow: hidden;
+    border-radius: 3px;
+  }
+  #friend-app .sidebar,
+  #friend-app .main {
+    height: 100%;
+  }
+  #friend-app .sidebar {
+    float: left;
+    width: 200px;
+    color: #f4f4f4;
+    background-color: rgb(238,234,232);
+  }
+  #friend-app .main {
+    position: relative;
+    overflow: hidden;
+    background-color: #eee;
+  }
+  #friend-app .text {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+  }
+  #friend-app .message {
+    height: calc(100% - 160px);
+  }
+  .card {
+    padding: 12px;
+    border-bottom: solid 1px #24272c;
+  }
+  .card-tietle{
+    color: #777;
+    font-size: 8px;   
+  }
+  .card-content{
+    text-align: left;
+    color: #000;
+    line-height: 35px;
+    font-size: 14px;
+  }
+  .card .card-footer {
+    margin-top: 10px;
+  }
+  .card .avatar,
+  .card .name {
+    vertical-align: middle;
+  }
+  .card .avatar {
+    border-radius: 2px;
+  }
+  .card .name {
+    display: inline-block;
+    margin: 0 0 0 15px;
+    font-size: 16px;
+  }
+  .card .search {
+    padding: 0 10px;
+    width: 100%;
+    font-size: 12px;
+    color: #000;
+    height: 30px;
+    line-height: 30px;
+    border: solid 0px #3a3a3a;
+    border-radius: 4px;
+    outline: none;
+    background-color: rgb(219,217,216);
+  }
+  .list li {
+    padding: 12px 15px;
+    border-bottom: 1px solid #292c33;
+    cursor: pointer;
+    transition: background-color 0.1s;
+  }
+  .list li:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+  }
+  .list li.active {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  .list .avatar,
+  .list .name {
+    vertical-align: middle;
+  }
+  .list .avatar {
+    border-radius: 2px;
+  }
+  .list .name {
+    display: inline-block;
+    margin: 0 0 0 15px;
+  }
