@@ -14,11 +14,12 @@
           </el-col>
 
           <el-col :span="6" :style="{height:'80px','padding':'15px 0px ','border-bottom':'1px solid #999'}">
-            <div v-if="e.isDeal === 1">
-              <span style="line-height:80px" v-if="e.result ==0">已同意</span>
-              <span style="line-height:80px" v-if="e.result ==1">已拒绝</span>
+            <div v-if="e.isDeal === 1" style="line-height:50px">
+              <!-- 已同意 -->
+              <div style="line-height:50px;color: #999;" v-if="e.result ==0">已同意</div>
+              <div style="line-height:50px;color: #999;" v-if="e.result ==1">已拒绝</div>
             </div>
-            <el-row>
+            <el-row v-if="e.isDeal === 0">
               <el-button small @click.prevent.native="dealApply(e.id,0)" type="success">通过</el-button>
               <el-button small @click.prevent.native="dealApply(e.id,1)" type="danger">拒绝</el-button>
             </el-row>
@@ -35,9 +36,6 @@ export default {
       applyList: []
     }
   },
-  mounted: function () {
-    this.getAllApply()
-  },
   methods: {
     dealApply: function (applyId, result) { // 处理申请
       if (!applyId) {
@@ -47,22 +45,23 @@ export default {
       var param = new URLSearchParams()
       param.append('id', applyId)
       param.append('result', result)
-      this.$http.post('/friendApply/dealApply', param).then(function (response) {
+      this.$http.post('/friendApply/dealApply', param).then((response) => {
         var content = response.data.content
         if (content.status === '00') {
           if (content.data.result) {
             this.$Message.success(content.msg)
+            this.getAllApply()
           } else {
             this.$Message.error(content.msg)
           }
         }
       })
     },
-    getAllApply: function () {
-      this.$http.get('/friendApply/getAllApply').then(function (response) {
+    getAllApply: function () { // 获取所有的申请
+      this.$http.get('/friendApply/getAllApply').then((response) => {
         var content = response.data.content
         if (content.status === '00') {
-          this.applyList = content.data.allApply
+          this.applyList = content.data.applyList
         }
       })
     }

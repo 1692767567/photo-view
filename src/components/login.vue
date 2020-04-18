@@ -36,7 +36,7 @@
 import Base64 from '../../public/js/util/base64.js'
 
 export default {
-  data () {
+  data: function () {
     return {
       centerDialogVisible: false,
       loginObject: {
@@ -50,14 +50,15 @@ export default {
     }
   },
   mounted: function () {
-    // 加载页面的时候，把从前记录下来的邮箱和密码读取出来填充到页面中
     debugger
+    // 加载页面的时候，把从前记录下来的邮箱和密码读取出来填充到页面中
     var photoEmail = localStorage.getItem('photo_email')
     var photoPassword = localStorage.getItem('photo_password')
-
+    // 如果不为空，就进行解密
     if (photoEmail) {
       this.loginObject.email = Base64.decode(photoEmail)
     }
+    // 如果不为空，就进行解密
     if (photoPassword) {
       this.loginObject.password = Base64.decode(photoPassword)
     }
@@ -88,7 +89,7 @@ export default {
         // console.log('登录成功后的' + response)
       })
     },
-    changeCode: function () {
+    changeCode: function () { // 点击切换图片
       debugger
       var num = Math.ceil(Math.random() * 10) // 生成一个随机数（防止缓存）
       if (this.codeSrc.indexOf('?') >= 0) {

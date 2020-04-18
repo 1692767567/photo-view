@@ -41,26 +41,26 @@
               </header>
               <div class="card-footer">
                 <div class="card-tietle">新的朋友</div>
-                <div :class="{'cart-list-div':true,'current-cart-list-div':'new_friend'===currentCartListValue}" @click="selectCardList('new_friend')">
+                <div :class="{'cart-list-div':true,'active':'new_friend'===currentCartListValue}" @click="selectCardList('new_friend')">
                   <el-row>
                     <el-col :span="5">
                       <img style="height: 35px;" src="../../public/images/addFriend.png">
                     </el-col>
                     <el-col :span="16">
-                      <div class="card-content" @click="dialogVisible=true">新的朋友</div>
+                      <div class="card-content" @click="opendAddFriend"><router-link to="/friend/addFriendApply" tag="a">新的朋友</router-link></div>
                     </el-col>
                   </el-row>
                 </div>
               </div>
               <div class="card-footer">
                 <div class="card-tietle">好友申请</div>
-                <div :class="{'cart-list-div':true,'current-cart-list-div':'new_friend'===currentCartListValue}" @click="selectCardList('new_friend')">
+                <div :class="{'cart-list-div':true,'active':'new_friend'===currentCartListValue}" @click="selectCardList('new_friend')">
                   <el-row>
                     <el-col :span="5">
                       <img style="height: 30px;" src="../../public/images/friendApply.png">
                     </el-col>
                     <el-col :span="16">
-                      <div class="card-content"><router-link to="/friend/friendApplyList" tag="a">好友申请</router-link></div>
+                      <div class="card-content" @click="openApplyList"><router-link to="/friend/friendApplyList" tag="a" ref="applyList">好友申请</router-link></div>
                     </el-col>
                   </el-row>
                 </div>
@@ -69,11 +69,13 @@
             <div class="list">
               <ul>
                 <li
-                  v-for="(item,index) in currentSessions"
+                  v-for="(item,index) in allFriendList"
                   :key="'user_list'+index"
-                  :class="{ active: item.id === currentSessionId }"
-                  @click="selectSession(item.id)"
+                  :class="{ active: 'friend_'+item.id === currentCartListValue }"
+                  @click="selectCardList('friend_'+item.id)"
                 >
+                <!-- 设置满宽高、设置点击时间 -->
+                <div style="n"></div>
                   <img class="avatar" width="30" height="30" :alt="item.user.name" :src="item.user.img" />
                   <p class="name">{{item.user.name}}</p>
                 </li>
@@ -106,56 +108,9 @@
           </div>
         </div>
         <div style="position: relative;overflow: hidden;background-color: #eee;height:100%">
-          <router-view :style="{'height':'100%'}"></router-view>
+          <router-view :style="{'height':'100%'}" ref="view"></router-view>
         </div>
       </div>
-
-      <el-dialog
-        title="添加好友"
-        :visible.sync="dialogVisible"
-        width="30%"
-        :before-close="handleClose">
-        <div style="margin-top: 15px;">
-          <el-input placeholder="请完整的邮箱" v-model="friendApplySearchValue" class="input-with-select">
-            <el-button slot="append" icon="el-icon-search" @click="friendApplySearch"></el-button>
-          </el-input>
-        </div>
-
-        <template>
-          <el-table
-            :data="userList"
-            style="width: 100%">
-            <el-table-column
-              prop="userName"
-              label="用户名"
-              width="180">
-            </el-table-column>
-            <el-table-column
-              prop="userEmail"
-              label="邮箱"
-              width="180">
-            </el-table-column>
-            <el-table-column
-              fixed="right"
-              label="操作"
-              width="100">
-              <template slot-scope="scope">
-                <el-button @click="addApply(scope.row)" type="text" size="small">添加</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-
-          <el-form v-show="isShowRemark">
-            <el-form-item label="活动形式">
-              <el-input type="textarea" v-model="currentApplyRemark"></el-input>
-            </el-form-item>
-
-             <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm')" size="small" plain>提交</el-button>
-            </el-form-item>
-          </el-form>
-        </template>
-      </el-dialog>
   </div>
 </template>
 <script>
@@ -201,61 +156,17 @@ export default {
         }
       })
     },
-    handleClose (done) { // 关闭搜索添加好友的弹框
-      this.$confirm('确认关闭？')
-        .then(_ => {
-          done()
-        })
-        .catch(_ => {})
-    },
-    friendApplySearch: function () { // 根据邮箱搜索好友
-      if (!this.friendApplySearchValue) {
-        return
-      }
-      var param = new URLSearchParams()
-      param.append('email', this.friendApplySearchValue)
-      this.$http.post('/user/getUserByEmail', param).then((response) => {
-        var content = response.data.content
-        if (content.status === '00') {
-          this.userList = content.data.userInfo
-          if (!this.userList || this.userList.length === 0) {
-            this.$Message.success(content.msg)
-          }
-        }
-      })
-    },
-    showRemark: function (row) { // 点击添加按钮,展示备注页面
-      this.currentApplyFriendId = row.userId
-      this.isShowRemark = true
-    },
-    addApply: function () { // 提交好友申请
-      if (this.currentApplyRemark && this.currentApplyRemark.length > 20) {
-        this.$Message.error('申请备注不能超过20个字')
-        return
-      }
-
-      var param = new URLSearchParams()
-      param.append('toId', this.currentApplyFriendId)
-      param.append('remark', this.currentApplyRemark)
-      // 提交添加好友申请
-      this.$http.post('/friendApply/insertApply', param).then((response) => {
-        var content = response.data.content
-        if (content.status === '00') {
-          if (content.data.result) {
-            this.$Message.success(content.data.msg)
-          } else {
-            this.$Message.error(content.data.msg)
-          }
-        }
-      })
-      this.isShowRemark = true
-    },
     selectCardList: function () {
+    },
+    opendAddFriend: function () {
+      this.$refs.view.changeDialogVisible()
+    },
+    openApplyList: function () {
+      this.$refs.view.getAllApply()
     }
   },
   data () {
     return {
-      dialogVisible: false,
       isShowFriend: false,
       content: '',
       // 当前用户
@@ -321,18 +232,10 @@ export default {
       currentFriendList: [],
       // 好友列表页面筛选的关键字
       friendKey: '',
-      // 搜索添加好友的搜索结果列表
-      userList: [],
-      // 添加好友的搜索输入的内容
-      friendApplySearchValue: '',
       // 好友页面当前选中的功能或者好友
       currentCartListValue: '',
-      // 添加好友页面点击添加按钮的好友id
-      currentApplyFriendId: '',
-      // 添加好友页面的备注
-      currentApplyRemark: '',
-      // 是否展示备注
-      isShowRemark: false
+      // 当前选中的好友id
+      currentFriendId: ''
     }
   },
   filters: {
