@@ -3,14 +3,14 @@
   <div id="all-div">
       <div id="friend-app" style="">
         <div class="cntro-div">
-          <div class="user-img-div"><img src="../../public/images/friend1.jpg" style="width:40px;height:40px;margin-left:5px"></div>
-          <ui>
+          <div class="user-img-div"><img :src="user.photoPath" style="width:40px;height:40px;margin-left:5px"></div>
+          <ul>
             <li><a @click.prevent="isShowFriend=false" :class="{check:!isShowFriend,'icon-a':true}"><i class="el-icon-chat-round"></i></a></li>
-            <li><a @click.prevent="isShowFriend=true" :class="{check:isShowFriend,'icon-a':true}"><i class="el-icon-user"></i></a></li>
-          </ui>
+            <li @click="getAllFriend()"><a @click.prevent="isShowFriend=true" :class="{check:isShowFriend,'icon-a':true}"><i class="el-icon-user"></i></a></li>
+          </ul>
         </div>
         <!-- 聊天功能所有的页面 -->
-        <div class="sidebar">
+        <div class="sidebar" style="width:250px">
           <div v-show="!isShowFriend">
             <div class="card">
               <header>
@@ -27,8 +27,24 @@
                   :class="{ active: item.id === currentSessionId }"
                   @click="selectSession(item.id)"
                 >
-                  <img class="avatar" width="30" height="30" :alt="item.user.name" :src="item.user.img" />
-                  <p class="name">{{item.user.name}}</p>
+                  <!-- <img class="avatar" width="30" height="30" :alt="item.frinedName" :src="item.friendPhoto" />
+                  <p class="name">{{item.frinedName | friendNameFilter}}</p> -->
+
+                  <el-row>
+                  <el-col :span="4">
+                    <div style="position: relative;">
+                      <img class="avatar" width="40" height="40"  :alt="item.frinedName" :src="item.friendPhoto"/>
+                      <i v-show="item.unreadCount>0" style="display: inline-block;width: 15px;height: 15px;text-align: center;background: red;line-height: 15px;color: #fff;border-radius: 50%;position: absolute;right: 0px;top: 0px;">{{item.unreadCount}}</i>
+                    </div>
+                  </el-col>
+                  <el-col :span="13">
+                    <p class="name" style="line-height: 24px;font-size: 14px;display:block">{{item.frinedName | friendNameFilter}}</p>
+                    <p class="name" style="line-height:16px;color: #555;font-size: 12px;display:block">{{item.lastContent | friendNameFilter}}</p>
+                  </el-col>
+                  <el-col :span="7">
+                    <p style="font-size: 8px;text-align: right;color: #555;">{{ item.lastDate | lasttime}}</p>
+                  </el-col>
+                </el-row>
                 </li>
               </ul>
             </div>
@@ -41,7 +57,7 @@
               </header>
               <div class="card-footer">
                 <div class="card-tietle">新的朋友</div>
-                <div :class="{'cart-list-div':true,'active':'new_friend'===currentCartListValue}" @click="selectCardList('new_friend')">
+                <div :key="'apply_list'" :class="{'cart-list-div':true,active:'new_friend'===currentCartListValue}" @click="selectCardList('new_friend')">
                   <el-row>
                     <el-col :span="5">
                       <img style="height: 35px;" src="../../public/images/addFriend.png">
@@ -54,7 +70,7 @@
               </div>
               <div class="card-footer">
                 <div class="card-tietle">好友申请</div>
-                <div :class="{'cart-list-div':true,'active':'new_friend'===currentCartListValue}" @click="selectCardList('new_friend')">
+                <div :key="'apply_list'" :class="{'cart-list-div':true,active:'apply_list'===currentCartListValue}" @click="selectCardList('apply_list')">
                   <el-row>
                     <el-col :span="5">
                       <img style="height: 30px;" src="../../public/images/friendApply.png">
@@ -71,13 +87,16 @@
                 <li
                   v-for="(item,index) in allFriendList"
                   :key="'user_list'+index"
-                  :class="{ active: 'friend_'+item.id === currentCartListValue }"
+                  :class="{ active: 'friend_'+item.id == currentCartListValue }"
                   @click="selectCardList('friend_'+item.id)"
                 >
                 <!-- 设置满宽高、设置点击时间 -->
-                <div style="n"></div>
-                  <img class="avatar" width="30" height="30" :alt="item.user.name" :src="item.user.img" />
-                  <p class="name">{{item.user.name}}</p>
+                  <!-- <div style="width:100%;height:100%" > -->
+                    <router-link :to="{name:'friendInfo',params:{friendId:item.friendId}}" tag="div" @click.native="openFriendInfo(item.friendId)">
+                    <img class="avatar" width="30" height="30" :alt="item.remark" :src="item.friendPhoto" />
+                    <p class="name">{{item.remark | friendNameFilter}}</p>
+                    </router-link>
+                  <!-- </div> -->
                 </li>
               </ul>
             </div>
@@ -85,26 +104,26 @@
         </div>
         <!-- 聊天页面 -->
           <div class="main" v-show="!isShowFriend">
-          <div class="message" v-scroll-bottom="session.messages">
+          <div class="message" v-scroll-bottom="currentMessages">
             <ul v-if="session">
-              <li v-for="(item,index) in session.messages" :key="'message'+index">
+              <li v-for="(item,index) in currentMessages" :key="'message'+index">
                 <p class="time">
-                  <span>{{ item.date | time }}</span>
+                  <span>{{ item.createTime | time }}</span>
                 </p>
-                <div class="main" :class="{ self: item.self }">
+                <div class="main" :class="{ self: item.userId === item.fromId }">
                   <img
                     class="avatar"
                     width="30"
                     height="30"
-                    :src="item.self ? user.img : session.user.img"
+                    :src="item.userId === item.fromId ? user.photoPath : session.friendPhoto"
                   />
-                  <div class="messages-text">{{ item.content }}</div>
+                  <div class="messages-text">{{ item.message }}</div>
                 </div>
               </li>
             </ul>
           </div>
           <div class="text">
-          <textarea placeholder="按 Ctrl + Enter 发送" v-model="content" @keyup="sendMessageKeyUp"></textarea>
+          <textarea placeholder="按 Ctrl + Enter 发送" v-model="content" @keyup="websocketsend"></textarea>
           </div>
         </div>
         <div style="position: relative;overflow: hidden;background-color: #eee;height:100%">
@@ -114,8 +133,28 @@
   </div>
 </template>
 <script>
+import indexedDBUtil from '../../public/js/util/indexdb.js'
 export default {
   name: 'app',
+  created () {
+    this.$http.get('/user/getUserAllInfo').then((response) => {
+      var content = response.data.content
+      if (content.status === '00') {
+        this.user = content.data.userInfo
+        // 初始化websocet
+        this.initWebSocket(this.user.userId)
+
+        // 打开本地数据库
+        indexedDBUtil.init(this.user.userId)
+        //  加载时，请求未读消息
+        this.receiveUnreadMessage()
+      }
+    })
+  },
+  destroyed () {
+    // 离开路由之后断开websocket连接
+    this.webSocket.close()
+  },
   mounted: function () {
     this.currentSessions = [].concat(this.allSession)
   },
@@ -138,91 +177,190 @@ export default {
         }
       })
     },
-    sendMessageKeyUp: function (e) { // 发送信息
-      if (e.ctrlKey && e.keyCode === 13 && this.content.length) {
-        this.session.messages.push({
-          content: this.content,
-          date: new Date(),
-          self: true
-        })
-        this.content = ''
-      }
-    },
-    selectSession: function (itemId) { // 切换用户
+    selectSession: function (itemId) { // 切换会话
+      this.isShowFriend = false
       this.currentSessionId = itemId
       this.session = this.currentSessions.find(function (value, index, arr) {
         if (value.id === itemId) {
           return true
         }
       })
+      // 设置信息已读
+      indexedDBUtil.setContentRead(this.session, this.user)
+
+      this.currentFriendId = this.session.friendId
+      this.$http.get('/friend/getFriendInfo?friendId=' + this.currentFriendId).then((response) => {
+        var content = response.data.content
+        if (content.status === '00') {
+          this.currentFriend = content.data.friendInfo
+          if (!this.session) {
+            return
+          }
+
+          this.currentMessages.splice(0)
+          // 如果头像已经更换，就更新本地数据库头像
+          if (this.session.friendPhoto !== this.currentFriend.friendPhoto) {
+            this.session.friendPhoto = this.currentFriend.friendPhoto
+            indexedDBUtil.updateFriendPhoto(this.session, this.currentMessages)
+          } else {
+            indexedDBUtil.getSessionContext(this.session.id, this.user.userId, this.currentMessages)
+          }
+        }
+      })
     },
-    selectCardList: function () {
+    selectCardList: function (val) { // 选中功能或者好友
+      this.currentCartListValue = val
     },
-    opendAddFriend: function () {
+    opendAddFriend: function () { // 打开添加好友页面
       this.$refs.view.changeDialogVisible()
     },
-    openApplyList: function () {
+    openApplyList: function () { // 打开申请列表页面
       this.$refs.view.getAllApply()
+    },
+    openFriendInfo: function (friendId) { // 打开好友详情页面
+      this.currentFriendId = friendId
+    },
+    getAllFriend: function () { // 查询当前用户所有的好友
+      this.$http.get('/friend/getAllFriend').then((response) => {
+        var content = response.data.content
+        if (content.status === '00') {
+          this.allFriendList = content.data.allFriend
+        }
+      })
+    },
+    // 点击好友消息页面的发信息，就需要创建一个新会话
+    insertNewSession: function () {
+      this.$http.get('/friend/getFriendInfo?friendId=' + this.currentFriendId).then((response) => {
+        var content = response.data.content
+
+        if (content.status === '00') {
+          this.currentFriend = content.data.friendInfo
+          var session = this.allSession.find((session) => {
+            if (session.friendId === this.currentFriend.friendId) {
+              return true
+            }
+          })
+
+          var _this = this
+          // 当和当前好友的会话不存在时，就新建会话
+          if (!session) {
+            session = {
+              userId: _this.user.userId,
+              friendId: _this.currentFriend.friendId,
+              friendPhoto: _this.currentFriend.friendPhoto,
+              lastContent: '',
+              frinedName: _this.currentFriend.remark,
+              lastDate: new Date()
+            }
+            indexedDBUtil.insertSession(session, this.allSession, this.currentSessions, this.selectSession)
+          } else { // 已经存在和当前好友的会话
+            this.selectSession(session.id)
+          }
+        }
+      })
+    },
+    // 进入页面时，读取未读消息
+    receiveUnreadMessage: function () {
+      this.$http.get('/unreadMessage/getAllUnreadMessage').then((response) => {
+        var content = response.data.content
+        if (content.status === '00') {
+          var messageList = content.data.allMessages
+
+          if (messageList === undefined || messageList == null || messageList.length === 0) {
+            indexedDBUtil.getUserAllSession(this.user.userId, this.allSession)
+            return
+          }
+
+          for (var i = 0; i < messageList.length; i++) {
+            if (i === messageList.length - 1) {
+              indexedDBUtil.receiveUnreadMessage(messageList[i], this.allSession, this.user, true)
+            } else {
+              indexedDBUtil.receiveUnreadMessage(messageList[i], this.allSession, this.user, false)
+            }
+          }
+        }
+      })
+    },
+    initWebSocket (userId) { // 初始化weosocket
+      const wsuri = 'ws://localhost:8080/photo/chat?userId=' + userId
+      this.webSocket = new WebSocket(wsuri)
+      this.webSocket.onmessage = this.websocketonmessage
+      this.webSocket.onopen = this.websocketonopen
+      this.webSocket.onerror = this.websocketonerror
+      this.webSocket.onclose = this.websocketclose
+    },
+    websocketonopen () { // 连接建立成功执行的方法
+      console.log('websocket已连接')
+    },
+    websocketonerror () { // 连接建立失败重连
+      this.initWebSocket()
+    },
+    websocketonmessage (e) { // 数据接收
+      var data = JSON.parse(e.data)
+
+      // 当前正处于和该好友对话，就设置成已读信息
+      debugger
+      if (this.session && data.fromId === this.session.friendId) {
+        data.isRead = 0
+      }
+      // 删除data中的id，因为id应该给数据库自动生成
+      delete data.id
+      indexedDBUtil.receiveMessage(data, this.currentMessages, this.allSession, this.session)
+    },
+    // 数据发送
+    websocketsend (e) {
+      // 如果不是按ctrl+回车键，并且内容不为空，就结束函数
+      if (e.ctrlKey && e.keyCode === 13 && this.content.length) {
+        // 拿到执行vue实例的引用
+        var _this = this
+
+        // 发送的信息对象
+        var data = {
+          userId: _this.currentFriend.friendId,
+          toId: _this.currentFriend.friendId,
+          fromId: _this.user.userId,
+          fromPhoto: _this.user.photoPath,
+          message: this.content,
+          isRead: 1,
+          createTime: new Date()
+        }
+
+        // 通过webscoket发送给服务器
+        this.webSocket.send(JSON.stringify(data))
+
+        // 插入到本地indexedDB数据库
+        data.sessionId = this.session.id
+        data.userId = data.fromId
+        data.isRead = 0
+        this.session.lastContent = data.message
+        this.session.lastDate = data.createTime
+        indexedDBUtil.insertSessionContent(data, this.currentMessages, this.session, true)
+
+        this.content = ''
+      }
+    },
+    websocketclose (e) { // 关闭
+      console.log('websocket已断开连接', e)
     }
   },
   data () {
     return {
+      // webSocket的引用
+      webSocket: null,
+      // 是否展示有关好友消息，true显示的好友功能，false显示的会话功能
       isShowFriend: false,
+      // 发送的信息内容
       content: '',
       // 当前用户
-      user: {
-        name: 'coffce',
-        img: '../../public/images/friend1.jpg'
-      },
+      user: {},
       // 会话列表
-      allSession: [
-        {
-          id: 1,
-          user: {
-            name: '示例介绍',
-            img: '../../public/images/friend2.png'
-          },
-          messages: [
-            {
-              content:
-                'Hello，这是一个基于Vue + Vuex + Webpack构建的简单chat示例，聊天记录保存在localStorge, 有什么问题可以通过Github Issue问我。',
-              date: new Date()
-            },
-            {
-              content: '项目地址: https://github.com/coffcer/vue-chat',
-              date: new Date()
-            }
-          ]
-        },
-        {
-          id: 2,
-          user: {
-            name: 'webpack',
-            img: '../../public/images/friend3.jpg'
-          },
-          messages: []
-        }
-      ],
+      allSession: [],
+      currentMessages: [], // 当前会话的所有聊天内容
       currentSessions: [], // 当前符合筛选条件的聊天记录
-      session: {
-        id: 1,
-        user: {
-          name: '示例介绍',
-          img: '../../public/images/friend2.png'
-        },
-        messages: [
-          {
-            content:
-              'Hello，这是一个基于Vue + Vuex + Webpack构建的简单chat示例，聊天记录保存在localStorge, 有什么问题可以通过Github Issue问我。',
-            date: new Date()
-          },
-          {
-            content: '项目地址: https://github.com/coffcer/vue-chat',
-            date: new Date()
-          }
-        ]
-      },
+      currentFriend: {}, // 当前好友
       // 当前选中的会话
+      session: {},
+      // 当前选中的会话Id
       currentSessionId: 1,
       // 过滤出只包含这个key的会话
       filterKey: '',
@@ -245,7 +383,60 @@ export default {
 
       // }
       date = new Date(date)
-      return date.getHours() + ':' + date.getMinutes()
+      var year = date.getFullYear()
+      var month = date.getMonth() + 1
+      if (month < 10) {
+        month = '0' + month
+      }
+      var d = date.getDate()
+      if (d < 10) {
+        d = '0' + d
+      }
+      var hours = date.getHours()
+      if (hours < 10) {
+        hours = '0' + hours
+      }
+      var minutes = date.getMinutes()
+      if (minutes < 10) {
+        minutes = '0' + minutes
+      }
+      var seconds = date.getSeconds()
+      if (seconds < 10) {
+        seconds = '0' + seconds
+      }
+      return `${year}-${month}-${d} ${hours}:${minutes}:${seconds}`
+    },
+    // 过滤会话最后的事件
+    lasttime (date) {
+      date = new Date(date)
+      var year = date.getFullYear()
+      var month = date.getMonth() + 1
+      if (month < 10) {
+        month = '0' + month
+      }
+      var d = date.getDate()
+      if (d < 10) {
+        d = '0' + d
+      }
+      var hours = date.getHours()
+      if (hours < 10) {
+        hours = '0' + hours
+      }
+      var minutes = date.getMinutes()
+      if (minutes < 10) {
+        minutes = '0' + minutes
+      }
+      var seconds = date.getSeconds()
+      if (seconds < 10) {
+        seconds = '0' + seconds
+      }
+
+      var today = new Date()
+      if (today.getFullYear() === date.getFullYear() && today.getMonth() === date.getMonth() && today.getDate() === date.getDate()) {
+        return `${hours}:${minutes}:${seconds}`
+      } else {
+        return `${year}-${month}-${d}`
+      }
     }
   },
   directives: {
@@ -255,6 +446,15 @@ export default {
         vnode.context.scrollTop = vnode.context.scrollHeight - vnode.context.clientHeight
       })
     }
+  },
+  watch: {
+    allSession: {
+      handler: function () {
+        this.currentSessions = [].concat(this.allSession)
+      }
+    },
+    deep: true,
+    immediate: true
   }
 }
 </script>

@@ -15,11 +15,11 @@ axios.interceptors.request.use(function (config) {
 // 响应被接收之前拦截器，每次响应回来都会执行
 axios.interceptors.response.use(function (response) {
   // 统一对为错误的响应进行提示
-  // if (response.data.content !== undefined) {
-  //   if (response.data.content.status !== '00') {
-  //     Message.error(response.data.content.msg)
-  //   }
-  // }
+  if (response.data.content !== undefined) {
+    if (response.data.content.status !== '00') {
+      Message.error(response.data.content.msg)
+    }
+  }
   return response
 },
 function (error) {

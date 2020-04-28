@@ -11,6 +11,7 @@ import fileList from '../components/fileList.vue'
 import friend from '../components/friend.vue'
 import friendApplyList from '../components/friendApplyList.vue'
 import addFriendApply from '../components/addFriendApply.vue'
+import FriendInfo from '../components/friendInfo.vue'
 
 Vue.use(VueRouter)
 Vue.use(VueCookies)
@@ -23,6 +24,15 @@ Vue.filter('dateFilter', function (data) {
   var month = date.getMonth() + 1
   var d = date.getDate()
   return `${year}-${month}-${d}`
+})
+
+Vue.filter('friendNameFilter', function (data) {
+  if (data) {
+    if (data.length > 8) {
+      return data.substring(0, 8) + '...'
+    }
+  }
+  return data
 })
 const routes = [
   { path: '/', redirect: '/index' },
@@ -39,7 +49,8 @@ const routes = [
     children:
     [
       { path: '/friend/friendApplyList', component: friendApplyList },
-      { path: '/friend/addFriendApply', component: addFriendApply }
+      { path: '/friend/addFriendApply', component: addFriendApply },
+      { path: '/friend/friendInfo/:friendId', name: 'friendInfo', component: FriendInfo }
     ]
   }
 ]

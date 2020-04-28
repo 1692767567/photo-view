@@ -20,7 +20,7 @@
         </div>
 
         <ul class="layui-nav layui-col-md3 layui-col-md-offset9" :style="{'background':'#fff','color': '#3f2863'}">
-          <li class="layui-nav-item" v-if="reayLogin">
+          <li class="layui-nav-item" v-show="reayLogin">
             <img :src="userPath" style="width:50px;height:50px;" class="layui-nav-img">
             <dl class="layui-nav-child">
               <dd>
@@ -32,10 +32,10 @@
                 </dd>
             </dl>
           </li>
-          <li class="layui-nav-item" v-if="!reayLogin">
+          <li class="layui-nav-item" v-show="!reayLogin">
             <router-link tag="a" to="/login">登录</router-link>
           </li>
-          <li class="layui-nav-item" v-if="!reayLogin">
+          <li class="layui-nav-item" v-show="!reayLogin">
             <router-link tag="a" to="/login">注册</router-link>
           </li>
         </ul>
