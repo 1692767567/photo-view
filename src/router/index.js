@@ -12,6 +12,7 @@ import friend from '../components/friend.vue'
 import friendApplyList from '../components/friendApplyList.vue'
 import addFriendApply from '../components/addFriendApply.vue'
 import FriendInfo from '../components/friendInfo.vue'
+import dynamic from '../components/dynamic.vue'
 
 Vue.use(VueRouter)
 Vue.use(VueCookies)
@@ -43,6 +44,7 @@ const routes = [
   { path: '/dirList', component: dirList },
   { path: '/test', component: test },
   { path: '/fileList/:dirId', component: fileList },
+  { path: '/dynamic', component: dynamic, name: 'dynamic' },
   {
     path: '/friend/',
     component: friend,

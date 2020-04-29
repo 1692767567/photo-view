@@ -37,5 +37,11 @@
     "v-contextmenu": "^2.9.0",
     "vue-cli-plugin-element": "^1.0.1",
     "vue-template-compiler": "^2.6.11"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "jquery":true
+    }
   }
 }
