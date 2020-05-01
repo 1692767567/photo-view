@@ -13,6 +13,11 @@ import friendApplyList from '../components/friendApplyList.vue'
 import addFriendApply from '../components/addFriendApply.vue'
 import FriendInfo from '../components/friendInfo.vue'
 import dynamic from '../components/dynamic.vue'
+import management from '../components/management.vue'
+import userManage from '../components/userManage.vue'
+import dirTypeManage from '../components/dirTypeManage.vue'
+import dynamicManage from '../components/dynamicManage.vue'
+import announManage from '../components/announManage.vue'
 
 Vue.use(VueRouter)
 Vue.use(VueCookies)
@@ -53,6 +58,17 @@ const routes = [
       { path: '/friend/friendApplyList', component: friendApplyList },
       { path: '/friend/addFriendApply', component: addFriendApply },
       { path: '/friend/friendInfo/:friendId', name: 'friendInfo', component: FriendInfo }
+    ]
+  },
+  {
+    path: '/management/',
+    component: management,
+    children:
+    [
+      { path: '/management/userManage', component: userManage, name: 'userManage' },
+      { path: '/management/dirTypeManage', component: dirTypeManage, name: 'dirTypeManage' },
+      { path: '/management/dynamicManage', component: dynamicManage, name: 'dynamicManage' },
+      { path: '/management/announManage', component: announManage, name: 'announManage' }
     ]
   }
 ]

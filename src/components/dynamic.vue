@@ -158,7 +158,7 @@ export default {
       rules: {
         content: [
           { required: true, message: '请输入动态内容', trigger: 'blur' },
-          { max: 300, message: '动态不能超过255字', trigger: 'blur' }
+          { max: 255, message: '动态不能超过255字', trigger: 'blur' }
         ]
       }
     }
@@ -220,14 +220,14 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         var dynamicPaths = ''
-        if (valid) {
-          if (this.fileList && this.fileList.length > 0) {
-            for (var i = 0; i < this.fileList.length; i++) {
-              dynamicPaths = dynamicPaths + this.fileList[i].newFileName + ';'
-            }
+        if (!valid) {
+          return
+        }
+        if (this.fileList && this.fileList.length > 0) {
+          for (var i = 0; i < this.fileList.length; i++) {
+            dynamicPaths = dynamicPaths + this.fileList[i].newFileName + ';'
           }
         }
-
         var param = new URLSearchParams()
         param.append('content', this.ruleForm.content)
         param.append('photoPaths', dynamicPaths)

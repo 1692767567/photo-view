@@ -82,7 +82,6 @@ export default {
       params.append('code', this.loginObject.code)
 
       this.$http.post('/user/login', params, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).then((response) => {
-        debugger
         if (response.data.content.status === '00') {
           this.$router.push({ path: '/index' })
         }

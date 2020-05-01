@@ -28,6 +28,10 @@ function (error) {
       Message.error('还未登录')
       router.push('/login')
     }
+    if (error.response.status === 402) {
+      Message.error('非法请求')
+      router.push('/index')
+    }
   }
 })
 
