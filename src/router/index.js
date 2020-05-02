@@ -18,6 +18,10 @@ import userManage from '../components/userManage.vue'
 import dirTypeManage from '../components/dirTypeManage.vue'
 import dynamicManage from '../components/dynamicManage.vue'
 import announManage from '../components/announManage.vue'
+import albumTempManage from '../components/albumTempManage.vue'
+import albumTemp from '../components/albumTemp.vue'
+import userAlbum from '../components/userAlbum.vue'
+import userAlbumFile from '../components/userAlbumFile.vue'
 
 Vue.use(VueRouter)
 Vue.use(VueCookies)
@@ -50,6 +54,9 @@ const routes = [
   { path: '/test', component: test },
   { path: '/fileList/:dirId', component: fileList },
   { path: '/dynamic', component: dynamic, name: 'dynamic' },
+  { path: '/albumTemp', component: albumTemp, name: 'albumTemp' },
+  { path: '/userAlbum', component: userAlbum, name: 'userAlbum' },
+  { path: '/userAlbumFile/:id', component: userAlbumFile, name: 'userAlbumFile' },
   {
     path: '/friend/',
     component: friend,
@@ -68,7 +75,8 @@ const routes = [
       { path: '/management/userManage', component: userManage, name: 'userManage' },
       { path: '/management/dirTypeManage', component: dirTypeManage, name: 'dirTypeManage' },
       { path: '/management/dynamicManage', component: dynamicManage, name: 'dynamicManage' },
-      { path: '/management/announManage', component: announManage, name: 'announManage' }
+      { path: '/management/announManage', component: announManage, name: 'announManage' },
+      { path: '/management/albumTempManage', component: albumTempManage, name: 'albumTempManage' }
     ]
   }
 ]

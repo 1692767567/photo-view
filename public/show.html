@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./js/util/jquery.js"></script>
+</head>
+<body>
+</body>
+
+<script>
+    var pathArr
+    $(function(){
+        var url= String(window.document.URL);
+        var id = url.substring(url.indexOf("=")+1,url.length)
+        $.ajax({
+            dataType: 'json',
+            url: 'http://localhost:8080/photo/albumTemp/show?tempId='+id,
+            success: function(data){
+                if (data.content.status === '00'){
+                    
+                    var tempInfo = data.content.data.tempInfo
+                    debugger
+                    initCss(tempInfo.cssPaths.split(";"))
+                    initJs(tempInfo.jsPaths.split(";"))
+                    pathArr = tempInfo.photoPaths.split(";")
+                    if(tempInfo.htmlStr){
+                        $('body').append(tempInfo.htmlStr)
+                    }
+                    
+                }
+            },
+            xhrFields: {
+                withCredentials: true //允许跨域带Cookie
+            }
+        });
+    })
+
+    function callback(){
+        testStart(pathArr)
+    }
+
+    function initJs(jsArr){
+        if(!jsArr || jsArr.length == 0 ){
+            return
+        }
+
+        for(var i = 0 ; i < jsArr.length ; i++){
+            if(!jsArr[i]){
+                continue
+            }
+            var script = document.createElement("script");  //创建一个script标签
+            script.type = "text/javascript";
+            script.src=jsArr[i]
+            
+            if(i == jsArr.length-2){
+                script.onload = callback
+            }
+            document.getElementsByTagName('head')[0].appendChild(script);
+        }
+    }
+   
+    function initCss(cssArr){
+        debugger
+        if(!cssArr || cssArr.length == 0 ){
+            return
+        }
+
+        for(var i = 0 ; i < cssArr.length ; i++){
+            if(!cssArr[i]){
+                continue
+            }
+            var link = document.createElement("link");  //创建一个link标签
+            link.type = "text/css";
+            link.rel = "stylesheet";
+            link.href=cssArr[i]
+            document.getElementsByTagName('head')[0].appendChild(link);
+        }
+        
+    }
+   
+</script>
+</html>

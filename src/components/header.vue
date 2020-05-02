@@ -11,12 +11,11 @@
           </a>
         </h1>
         <div class="nav layui-col-md6">
-          <a href="index.html" class="active">文章</a>
-          <!-- <a href="whisper.html">微语</a> -->
           <router-link to="/dirList" tag="a">相册</router-link>
-          <a href="leacots.html">留言</a>
-          <a href="album.html">相册</a>
-          <a href="about.html">关于</a>
+          <router-link to="/friend" tag="a">好友</router-link>
+          <router-link to="/friend" tag="a">动态</router-link>
+          <router-link to="/albumTemp" tag="a">动态相册模板</router-link>
+          <router-link to="/userAlbum" tag="a">动态相册</router-link>
           <router-link to="/management" tag="a" v-if="showManagement">管理</router-link>
         </div>
 
@@ -96,7 +95,6 @@ export default {
     getFiftyLatest: function (id) {
       this.$http.get('/announ/getFiftyLatest').then((response) => {
         if (response.data.content.status === '00') {
-          debugger
           this.announList = response.data.content.data.pageInfo.list
           console.log(this.announList)
           // 查询最新的一个公告是否已读
@@ -109,7 +107,6 @@ export default {
       var param = new URLSearchParams()
       param.append('announId', announ.id)
       this.$http.post('/announHistory/isHasRead', param).then((response) => {
-        debugger
         var content = response.data.content
         if (content.status === '00') {
           if (!content.data.isHasRead) {

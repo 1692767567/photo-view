@@ -31,6 +31,12 @@
                             <span slot="title">公告管理</span>
                         </el-menu-item>
                     </router-link>
+                    <router-link to="/management/albumTempManage" tag="div">
+                        <el-menu-item index="5">
+                            <i class="el-icon-menu"></i>
+                            <span slot="title">动态模板管理</span>
+                        </el-menu-item>
+                    </router-link>
                 </el-menu>
             </el-col>
             </el-row>
