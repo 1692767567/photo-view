@@ -240,7 +240,7 @@ export default {
             this.$Message.success(content.msg)
             this.centerDialogVisible = false
             this.ruleForm.content = ''
-            this.fileList = []
+            this.fileList.splice(0)
             this.getDynamicData(1, this.page.pageSize)
           }
         })
@@ -280,10 +280,11 @@ export default {
       var value = e.target.innerHTML
       // 取消回复
       if (value === '取消回复') {
+        debugger
         e.target.innerHTML = '回复'
         // 给回复框添加提示
-        this.areaPromptArr[this.currentCommentIndex] = ''
-        this.currentComment = null
+        this.areaPromptArr.splice(this.currentCommentIndex, 1, '')
+        this.currentComment = {}
 
         return
       }

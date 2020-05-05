@@ -46,6 +46,7 @@
                     <input type="text" class="input__inner" v-model="editorData.editName">
                   </el-col>
                   <el-col :span="2" :offset="1">
+                    <!-- 确定修改 -->
                     <i class="el-icon-check" style="line-height:40px" @click="saveName"></i>
                     </el-col>
                   <el-col :span="2">
@@ -72,6 +73,7 @@
                   <el-col :span="12">
                     <input type="text" class="input__inner" v-model="editorData.editPhone">
                   </el-col>
+                  <!-- 确定修改 -->
                   <el-col :span="2" :offset="1"><i class="el-icon-check" @click="savePhone" style="line-height:40px"></i></el-col>
                   <el-col :span="2"><i class="el-icon-close" @click="editorContr.phoneEditor=false"></i></el-col>
                 </el-row>
@@ -270,6 +272,7 @@ export default {
         this.save()
       }
     },
+    // 修改手机号
     savePhone: function () {
       var b = true
       this.editorContr.phoneEditor = false
@@ -307,7 +310,6 @@ export default {
         debugger
         if (response.data.content.status === '00') {
           if (response.data.content.data.result) {
-            debugger
             var use = response.data.content.data.userInfo
             this.fromData.userName = use.userName
             this.fromData.userPhone = use.userPhone

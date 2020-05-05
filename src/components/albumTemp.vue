@@ -18,7 +18,7 @@
         </el-form-item>
         <el-form-item label="图片">
           <el-upload
-            action="/albumTempImgUploadAPI"
+            action="/userAlbumTempPhotUploadAPI"
             list-type="picture-card"
             multiple
             :on-success="uploadPhotoSuccess"
@@ -182,7 +182,7 @@ export default {
     },
     // 在上传页面点击删除图片触发
     removePhoto (file, fileList) {
-      this.$http.get('/management/albumTemp/deleteTempImg/?fileName=' + file.newFileName).then((response) => {
+      this.$http.get('/albumTemp/deleteTempImg/?fileName=' + file.newFileName).then((response) => {
         if (response.data.content.status === '00') {
           if (response.data.content.data.result) {
             this.$Message.success(response.data.content.msg)

@@ -53,7 +53,7 @@
           <div v-show="isShowFriend">
             <div class="card">
               <header>
-                <input class="search" type="text" placeholder="search user..." @keyup="onKeyup" />
+                <input class="search" type="text" placeholder="search user..." @keyup="onKeyup2" />
               </header>
               <div class="card-footer">
                 <div class="card-tietle">新的朋友</div>
@@ -85,7 +85,7 @@
             <div class="list">
               <ul>
                 <li
-                  v-for="(item,index) in allFriendList"
+                  v-for="(item,index) in currentFriendList"
                   :key="'user_list'+index"
                   :class="{ active: 'friend_'+item.id == currentCartListValue }"
                   @click="selectCardList('friend_'+item.id)"
@@ -163,7 +163,17 @@ export default {
       this.filterKey = e.target.value
       this.currentSessions.splice(0)
       this.currentSessions = this.allSession.filter((value) => {
-        if (value.user.name.indexOf(this.filterKey) >= 0) {
+        if (value.frinedName.indexOf(this.filterKey) >= 0) {
+          return value
+        }
+      })
+    },
+    onKeyup2 (e) { // 过滤好友列表
+      debugger
+      this.filterKey = e.target.value
+      this.currentFriendList.splice(0)
+      this.currentFriendList = this.allFriendList.filter((value) => {
+        if (value.remark.indexOf(this.filterKey) >= 0) {
           return value
         }
       })
@@ -451,6 +461,11 @@ export default {
     allSession: {
       handler: function () {
         this.currentSessions = [].concat(this.allSession)
+      }
+    },
+    allFriendList: {
+      handler: function () {
+        this.currentFriendList = [].concat(this.allFriendList)
       }
     },
     deep: true,

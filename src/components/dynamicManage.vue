@@ -33,7 +33,7 @@
           title="确定撤回该动态？"
             @onConfirm="openDelete(scope.row)"
         >
-        <el-button type="text" size="small" slot="reference">禁用</el-button>
+        <el-button type="text" size="small" slot="reference">撤回</el-button>
         </el-popconfirm>
       </template>
     </el-table-column>

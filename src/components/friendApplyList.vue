@@ -51,6 +51,7 @@ export default {
           if (content.data.result) {
             this.$Message.success(content.msg)
             this.getAllApply()
+            this.$parent.getAllFriend()
           } else {
             this.$Message.error(content.msg)
           }

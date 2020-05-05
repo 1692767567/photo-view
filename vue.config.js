@@ -45,6 +45,15 @@ module.exports = {
         pathRewrite: {
           '^/userAlbumFileUploadAPI': '/'
         }
+      },
+      '/userAlbumTempPhotUploadAPI': { // 用户动态相册模板文件上传
+        target: 'http://localhost:8080/photo/albumTemp/uploadTempImg', // 服务器端接口地址
+        ws: true, // 如果要代理 websockets，配置这个参数
+        // 如果是https接口，需要配置这个参数
+        changeOrigin: true, // 是否跨域
+        pathRewrite: {
+          '^/userAlbumTempPhotUploadAPI': '/'
+        }
       }
     }
 

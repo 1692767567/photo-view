@@ -1,11 +1,14 @@
 <template>
 <div style="width:100%">
   <photoheader></photoheader>
-
+<!-- 上传文件 -->
+    <el-dialog :visible.sync="imgDialogVisible">
+        <img width="100%" :src="dialogImageUrl" alt="">
+      </el-dialog>
   <h1>{{album.name}}</h1>
   <div id='waterfall'>
     <span v-for="(file,index) in fileArr" :key="'file_'+index"  @contextmenu='selectFile(file.fileId, file.filePath)'>
-      <img :src='file.filePath'  @contextmenu.prevent='onContextmenu'/>
+      <img :src='file.filePath'  @contextmenu.prevent='onContextmenu' @click="showImg(file.filePath)"/>
     </span>
 
     <span @click="dialogVisible=true" style="width:100px;height:100px;border:1px dashed #8c939d" >
@@ -48,7 +51,9 @@ export default {
       fileArr: [],
       dialogVisible: false,
       fileList: [],
-      selectFileName: ''
+      selectFileName: '',
+      dialogImageUrl: '',
+      imgDialogVisible: false
     }
   },
   mounted: function () {
@@ -64,6 +69,11 @@ export default {
     })
   },
   methods: {
+    // 弹出图片放大的弹框
+    showImg: function (path) {
+      this.imgDialogVisible = true
+      this.dialogImageUrl = path
+    },
     getAllFile: function () { // 查询当前相册下所有的图片
       this.$http.get('/userAlbumFile/getAllFileByAlbumId?albumId=' + this.album.id).then((response) => {
         if (response.data.content.status === '00') {

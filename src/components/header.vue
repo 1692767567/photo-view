@@ -12,8 +12,8 @@
         </h1>
         <div class="nav layui-col-md6">
           <router-link to="/dirList" tag="a">相册</router-link>
-          <router-link to="/friend" tag="a">好友</router-link>
-          <router-link to="/friend" tag="a">动态</router-link>
+          <router-link target="_blank" to="/friend" tag="a">好友</router-link>
+          <router-link to="/dynamic" tag="a">动态</router-link>
           <router-link to="/albumTemp" tag="a">动态相册模板</router-link>
           <router-link to="/userAlbum" tag="a">动态相册</router-link>
           <router-link to="/management" tag="a" v-if="showManagement">管理</router-link>
@@ -26,7 +26,6 @@
               <dd>
                 <router-link to="/updateSelfInfo" tag="a">个人信息</router-link>
               </dd>
-              <dd><a href="javascript:;">安全管理</a></dd>
               <dd>
                 <a @click.prevent="loginOut">退出</a>
                 </dd>
@@ -82,6 +81,9 @@ export default {
             this.reayLogin = false
 
             this.$Message.success(response.data.content.msg)
+
+            // 跳转到登录页面
+            this.$router.push('/login')
           } else {
             this.$Message.error(response.data.content.msg)
           }
@@ -160,7 +162,12 @@ export default {
       })
     }
 
-    if (this.$cookies.isKey('cookie_role_id')) {
+    // if (this.$cookies.isKey('cookie_role_id')) {
+    //   if(this.$cookies.get())
+    //   this.showManagement = true
+    // }
+    debugger
+    if (this.$cookies.get('cookie_role_id') === '2') {
       this.showManagement = true
     }
   },

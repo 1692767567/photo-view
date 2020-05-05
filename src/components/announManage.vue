@@ -105,7 +105,7 @@ export default {
         ],
         content: [
           { required: true, message: '请输入内容', trigger: 'blur' },
-          { max: 25, message: '内容不能超过255字', trigger: 'blur' }
+          { max: 255, message: '内容不能超过255字', trigger: 'blur' }
         ]
       },
       // 显示所有内容的公告内容
