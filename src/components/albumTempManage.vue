@@ -15,9 +15,9 @@
         <el-form-item label="模板名" prop="name">
           <el-input  v-model="ruleForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="图片总数" prop="photoCount">
+        <!-- <el-form-item label="图片总数" prop="photoCount">
           <el-input  v-model="ruleForm.photoCount"></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="图片">
           <el-upload
             action="/albumTempImgUploadAPI"
@@ -164,7 +164,7 @@ export default {
       // 表单对应的对象
       ruleForm: {
         // 图片个数
-        photoCount: 0,
+        // photoCount: 0,
         // 模板名
         name: '',
         // html结构
@@ -368,7 +368,7 @@ export default {
         var param = new URLSearchParams()
         param.append('name', this.ruleForm.name)
         param.append('htmlStr', this.ruleForm.htmlStr)
-        param.append('photoCount', this.ruleForm.photoCount)
+        // param.append('photoCount', this.ruleForm.photoCount)
         param.append('tempRemark', this.ruleForm.tempRemark)
         param.append('photoPaths', photoPaths)
         param.append('jsPaths', jsPaths)
