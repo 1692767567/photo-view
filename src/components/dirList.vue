@@ -62,7 +62,7 @@
         </el-row>
         <el-row>
           <el-col :span="4" :offset="10">
-            <div style="color:#aaa;padding:20px 30px">我是有底线的</div>
+            <div style="color:#aaa;padding:20px 30px">我是有底线的~</div>
           </el-col>
         </el-row>
         </div>

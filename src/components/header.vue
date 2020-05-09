@@ -11,6 +11,7 @@
           </a>
         </h1>
         <div class="nav layui-col-md6">
+          <router-link to="/index" tag="a">首页</router-link>
           <router-link to="/dirList" tag="a">相册</router-link>
           <router-link target="_blank" to="/friend" tag="a">好友</router-link>
           <router-link to="/dynamic" tag="a">动态</router-link>
